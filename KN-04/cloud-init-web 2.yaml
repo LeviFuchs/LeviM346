@@ -6,23 +6,19 @@ users: # Die Benutzer
     home: /home/ubuntu # Home Pfad
     shell: /bin/bash # Shell
     ssh_authorized_keys:
-      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD4TRpvrq43I/AcYOiEsIu/6e/4bcJ8VmUAD4e3uWCxMhjxRiuAnUco7uJVJrTU3uWTMAFkrZyGCnVp2orsisnuaXaOwJ8hYadiIqPawKMXgay3P+jTiwYUdYSjD1gVmPvBKV+K2o7a4MMf6K//msZRQjB7qQMNJ4E7XPaEoxGRxkKhyqBFVpfT8F4HRAfWlIwXCs0p/iEaA+JhCFCxawF3wvowcPSpHgQEFYLTnTrfrNefpPZF3QuJUQDyty7S3sk3rLc19ezoGmba+0qRc4aDvBQ6eTjqSEwNtIUyzjuFPDx/SFtlvmlp93fxd4PRC+9BOPbrXLNEkvixPa5g/QVF aws-key # SSH Key     
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC0WGP1EZykEtv5YGC9nMiPFW3U3DmZNzKFO5nEu6uozEHh4jLZzPNHSrfFTuQ2GnRDSt+XbOtTLdcj26+iPNiFoFha42aCIzYjt6V8Z+SQ9pzF4jPPzxwXfDdkEWylgoNnZ+4MG1lNFqa8aO7F62tX0Yj5khjC0Bs7Mb2cHLx1XZaxJV6qSaulDuBbLYe8QUZXkMc7wmob3PM0kflfolR3LE7LResIHWa4j4FL6r5cQmFlDU2BDPpKMFMGUfRSFiUtaWBNXFOWHQBC2+uKmuMPYP4vJC9sBgqMvPN/X2KyemqdMvdKXnCfrzadHuSSJYEzD64Cve5Zl9yVvY4AqyBD aws-key # SSH Key     
       - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQClI5/25VtBL7ozv3bsPmFsAJBKcEn68tJx+tenoYgPEvUJI7T6dGxqlaP6901QRbzU27udS0JoV5ycDYLlKiJYFRQWVmK9hfNe5o7CJuDiuKK7A1q3FetEhx2qxuc0w/E6Ly2EuGz1baV2rJTFmhck86KlS58pKgRGQo/0q3ob+4AQZKR9a/J9/jxaSMtGZis7nrBLrpxF94FxPFOyNDhaJSHj8fsIOXeyVN8/IvWIEBD5BxSNu2WlKqIphPMAcb3iVBMfGsVSo75gMd/olagjdHe+0+mkX/ViS2GXlfMA2oyhc5KKOVdy/X0AoIsMTLtvpnrQMjxvLjJmX23yVKaF aws-key # SSH Key     
 ssh_pwauth: false # Passwort Authentifikation
 disable_root: false # Kein Root
 package_update: true # Packages updaten
 packages: # Die Packages
-  - curl 
-  - wget 
+  - apache 2
+  - php
+  - php-mysql
   - adminer
 
 
-runcmd: 
-  - sudo apt update
-  - sudo apt install -y apache2
-  - sudo apt install -y php
-  - sudo apt install -y libapache2-mod-php
-  - sudo apt install -y php-mysqli
+runcmd:
   - sudo a2enconf adminer
   - sudo systemctl restart apache2
 
@@ -40,7 +36,7 @@ write_files:
           // database
           $servername = "[IP-Adresse vom DB instanz]";
           $username = "admin";
-          $password = "tim1234";
+          $password = "levi123";
           $dbname = "mysql";
 
           // Create connection
