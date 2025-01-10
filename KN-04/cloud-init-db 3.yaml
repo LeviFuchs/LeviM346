@@ -1,0 +1,22 @@
+#cloud-config
+users: # Die Benutzer
+  - name: ubuntu # Benutzername
+    sudo: ALL=(ALL) NOPASSWD:ALL # Rechte
+    groups: users, admin #Rechte
+    home: /home/ubuntu # Home Pfad
+    shell: /bin/bash # Shell
+    ssh_authorized_keys:
+     - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD4TRpvrq43I/AcYOiEsIu/6e/4bcJ8VmUAD4e3uWCxMhjxRiuAnUco7uJVJrTU3uWTMAFkrZyGCnVp2orsisnuaXaOwJ8hYadiIqPawKMXgay3P+jTiwYUdYSjD1gVmPvBKV+K2o7a4MMf6K//msZRQjB7qQMNJ4E7XPaEoxGRxkKhyqBFVpfT8F4HRAfWlIwXCs0p/iEaA+JhCFCxawF3wvowcPSpHgQEFYLTnTrfrNefpPZF3QuJUQDyty7S3sk3rLc19ezoGmba+0qRc4aDvBQ6eTjqSEwNtIUyzjuFPDx/SFtlvmlp93fxd4PRC+9BOPbrXLNEkvixPa5g/QVF aws-key # SSH Key     
+     - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQClI5/25VtBL7ozv3bsPmFsAJBKcEn68tJx+tenoYgPEvUJI7T6dGxqlaP6901QRbzU27udS0JoV5ycDYLlKiJYFRQWVmK9hfNe5o7CJuDiuKK7A1q3FetEhx2qxuc0w/E6Ly2EuGz1baV2rJTFmhck86KlS58pKgRGQo/0q3ob+4AQZKR9a/J9/jxaSMtGZis7nrBLrpxF94FxPFOyNDhaJSHj8fsIOXeyVN8/IvWIEBD5BxSNu2WlKqIphPMAcb3iVBMfGsVSo75gMd/olagjdHe+0+mkX/ViS2GXlfMA2oyhc5KKOVdy/X0AoIsMTLtvpnrQMjxvLjJmX23yVKaF aws-key # SSH Key     
+ssh_pwauth: false # Passwort Authentifikation
+disable_root: false # Kein Root
+package_update: true # Packages updaten
+packages: # Die Packages
+  - curl 
+  - wget 
+runcmd:
+  - sudo apt update
+  - sudo apt install -y mariadb-server
+  - sudo mysql -sfu root -e "GRANT ALL ON *.* TO 'admin'@'%' IDENTIFIED BY 'tim1234' WITH GRANT OPTION;"
+  - sudo sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mysql/mariadb.conf.d/50-server.cnf
+  - sudo systemctl restart mariadb.service
