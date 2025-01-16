@@ -33,12 +33,6 @@ Für mich ist AWS hier ebenfalls ein wenig attraktiver, weil es dieselben Anford
 Beide Anbieter ermöglichen eine einfache Skalierung, falls die Firma in Zukunft mehr Leistung oder Speicherplatz benötigt. Ich habe mich bemüht, eine langfristig flexible Lösung zu finden. AWS wirkt hier wegen der günstigeren Preise ebenfalls ein bisschen vorteilhafter, aber beide Anbieter bieten grundsätzlich ähnliche Möglichkeiten.
 
 
-100GB = 1 Backup
-täglich                             700GB
-pro Woche                      400GB
-3x für 3 Monate              300GB
-                                        = 1400GB ~ 1500GB
-
 # B
 ### Web
 ![Heroku Preisliste](Bstandart.png)
