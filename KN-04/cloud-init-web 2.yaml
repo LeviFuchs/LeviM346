@@ -8,60 +8,63 @@ users: # Die Benutzer
     ssh_authorized_keys:
       - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC0WGP1EZykEtv5YGC9nMiPFW3U3DmZNzKFO5nEu6uozEHh4jLZzPNHSrfFTuQ2GnRDSt+XbOtTLdcj26+iPNiFoFha42aCIzYjt6V8Z+SQ9pzF4jPPzxwXfDdkEWylgoNnZ+4MG1lNFqa8aO7F62tX0Yj5khjC0Bs7Mb2cHLx1XZaxJV6qSaulDuBbLYe8QUZXkMc7wmob3PM0kflfolR3LE7LResIHWa4j4FL6r5cQmFlDU2BDPpKMFMGUfRSFiUtaWBNXFOWHQBC2+uKmuMPYP4vJC9sBgqMvPN/X2KyemqdMvdKXnCfrzadHuSSJYEzD64Cve5Zl9yVvY4AqyBD aws-key # SSH Key     
       - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQClI5/25VtBL7ozv3bsPmFsAJBKcEn68tJx+tenoYgPEvUJI7T6dGxqlaP6901QRbzU27udS0JoV5ycDYLlKiJYFRQWVmK9hfNe5o7CJuDiuKK7A1q3FetEhx2qxuc0w/E6Ly2EuGz1baV2rJTFmhck86KlS58pKgRGQo/0q3ob+4AQZKR9a/J9/jxaSMtGZis7nrBLrpxF94FxPFOyNDhaJSHj8fsIOXeyVN8/IvWIEBD5BxSNu2WlKqIphPMAcb3iVBMfGsVSo75gMd/olagjdHe+0+mkX/ViS2GXlfMA2oyhc5KKOVdy/X0AoIsMTLtvpnrQMjxvLjJmX23yVKaF aws-key # SSH Key     
-ssh_pwauth: false # Passwort Authentifikation
-disable_root: false # Kein Root
-package_update: true # Packages updaten
-packages: # Die Packages
-  - apache 2
+
+package_update: true
+packages:
+  - apache2
   - php
-  - php-mysql
+  - php-mysqli
   - adminer
-
-
-runcmd:
-  - sudo a2enconf adminer
-  - sudo systemctl restart apache2
+  - libapache2-mod-php
 
 
 write_files:
+  - path: /var/www/html/index.html
+    content: |
+      <html>
+        <head><title>Webserver</title></head>
+        <body>
+          <h1>Willkommen auf Levis Webserver!</h1>
+        </body>
+      </html>
+  - path: /var/www/html/info.php
+    content: |
+      <?php
+        phpinfo();
+      ?>
   - path: /var/www/html/db.php
     content: |
       <html>
       <head></head>
       <body>
-        Diese Seite macht eine Abfrage auf die Datenbank. <br />
-        Das ausgeführte Query ist: <i>select Host, User from mysql.user;</i><br /><br />
-        Das Resultat: <br />
-        <?php
-          // database
-          $servername = "[IP-Adresse vom DB instanz]";
-          $username = "admin";
-          $password = "levi123";
-          $dbname = "mysql";
+      Diese Seite macht eine Abfrage auf die Datenbank. <br />
+      Das ausgeführte Query ist: <i>select Host, User from mysql.user;</i><br /><br />
+      Das Resultat: <br />
+      <?php
+              //database
+              $servername = "172.31.22.160";
+              $username = "admin";
+              $password = "levi1234";
+              $dbname = "mysql";
 
-          // Create connection
-          $conn = new mysqli($servername, $username, $password, $dbname);
+              // Create connection
+              $conn = new mysqli($servername, $username, $password, $dbname);
+              // Check connection
+              if ($conn->connect_error) {
+                      die("Connection failed: " . $conn->connect_error);
+              }
 
-          // Check connection
-          if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-          }
-
-          $sql = "select Host, User from mysql.user;";
-          $result = $conn->query($sql);
-
-          while ($row = $result->fetch_assoc()) {
-            echo("<li>" . $row["Host"] . " / " . $row["User"] . "</li>");
-          }
-
-          // var_dump($result);
-        ?>
+              $sql = "select Host, User from mysql.user;";
+              $result = $conn->query($sql);
+              while($row = $result->fetch_assoc()){
+                      echo("<li>" . $row["Host"] . " / " . $row["User"] . "</li>");
+              }
+              //var_dump($result);
+      ?>
       </body>
       </html>
 
-  - path: /var/www/html/info.php
-    content: |
-      <?php
-      // Show all information, defaults to INFO_ALL
-      phpinfo();
-      ?>
+runcmd:
+  - sudo a2enconf adminer
+  - sudo systemctl restart apache2
+  - sudo systemctl enable apache2
