@@ -1,25 +1,26 @@
-#cloud-config
-users: # Die Benutzer
-  - name: ubuntu # Benutzername
-    sudo: ALL=(ALL) NOPASSWD:ALL # Rechte
-    groups: users, admin #Rechte
-    home: /home/ubuntu # Home Pfad
-    shell: /bin/bash # Shell
-    ssh_authorized_keys:
-      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC0WGP1EZykEtv5YGC9nMiPFW3U3DmZNzKFO5nEu6uozEHh4jLZzPNHSrfFTuQ2GnRDSt+XbOtTLdcj26+iPNiFoFha42aCIzYjt6V8Z+SQ9pzF4jPPzxwXfDdkEWylgoNnZ+4MG1lNFqa8aO7F62tX0Yj5khjC0Bs7Mb2cHLx1XZaxJV6qSaulDuBbLYe8QUZXkMc7wmob3PM0kflfolR3LE7LResIHWa4j4FL6r5cQmFlDU2BDPpKMFMGUfRSFiUtaWBNXFOWHQBC2+uKmuMPYP4vJC9sBgqMvPN/X2KyemqdMvdKXnCfrzadHuSSJYEzD64Cve5Zl9yVvY4AqyBD aws-key # SSH Key     
-      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQClI5/25VtBL7ozv3bsPmFsAJBKcEn68tJx+tenoYgPEvUJI7T6dGxqlaP6901QRbzU27udS0JoV5ycDYLlKiJYFRQWVmK9hfNe5o7CJuDiuKK7A1q3FetEhx2qxuc0w/E6Ly2EuGz1baV2rJTFmhck86KlS58pKgRGQo/0q3ob+4AQZKR9a/J9/jxaSMtGZis7nrBLrpxF94FxPFOyNDhaJSHj8fsIOXeyVN8/IvWIEBD5BxSNu2WlKqIphPMAcb3iVBMfGsVSo75gMd/olagjdHe+0+mkX/ViS2GXlfMA2oyhc5KKOVdy/X0AoIsMTLtvpnrQMjxvLjJmX23yVKaF aws-key # SSH Key     
+# Cloud-Init Konfiguration für die Einrichtung eines Ubuntu-Webservers mit Benutzer und PHP
+users:
+  - name: ubuntu  # Erstelle den Benutzer "ubuntu"
+    sudo: ALL=(ALL) NOPASSWD:ALL  # Volle sudo-Rechte ohne Passwortabfrage
+    groups: users, admin  # Weist den Benutzer den Gruppen "users" und "admin" zu
+    home: /home/ubuntu  # Definiert das Home-Verzeichnis
+    shell: /bin/bash  # Setzt die Standard-Shell auf Bash
+    ssh_authorized_keys:  # Hinterlegt autorisierte SSH-Schlüssel
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC0... aws-key  # Beispiel-SSH-Key
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCl... aws-key  # Beispiel-SSH-Key
 
-package_update: true
+# Aktualisiere die Paketliste und installiere notwendige Pakete
+package_update: true  # Führt ein apt-get update aus
 packages:
-  - apache2
-  - php
-  - php-mysqli
-  - adminer
-  - libapache2-mod-php
+  - apache2  # Installiert den Apache Webserver
+  - php  # Installiert PHP
+  - php-mysqli  # PHP-MySQL-Plugin für Datenbankinteraktionen
+  - adminer  # Installiert Adminer für Datenbankverwaltung
+  - libapache2-mod-php  # Modul, um PHP mit Apache zu verwenden
 
-
+# Schreibe Dateien in das Webverzeichnis
 write_files:
-  - path: /var/www/html/index.html
+  - path: /var/www/html/index.html  # Begrüßungsseite
     content: |
       <html>
         <head><title>Webserver</title></head>
@@ -27,12 +28,12 @@ write_files:
           <h1>Willkommen auf Levis Webserver!</h1>
         </body>
       </html>
-  - path: /var/www/html/info.php
+  - path: /var/www/html/info.php  # PHP-Info-Seite für Debugging
     content: |
       <?php
-        phpinfo();
+        phpinfo();  // Zeigt PHP-Informationen an
       ?>
-  - path: /var/www/html/db.php
+  - path: /var/www/html/db.php  # PHP-Skript zur Datenbankabfrage
     content: |
       <html>
       <head></head>
@@ -41,30 +42,29 @@ write_files:
       Das ausgeführte Query ist: <i>select Host, User from mysql.user;</i><br /><br />
       Das Resultat: <br />
       <?php
-              //database
-              $servername = "172.31.22.160";
-              $username = "admin";
-              $password = "levi1234";
-              $dbname = "mysql";
+              // Datenbankverbindung
+              $servername = "172.31.22.160";  // IP-Adresse der Datenbank
+              $username = "admin";  # Benutzername der Datenbank
+              $password = "levi1234";  # Passwort der Datenbank (Klartext: unsicher)
+              $dbname = "mysql";  # Datenbankname
 
-              // Create connection
+              // Verbindung herstellen
               $conn = new mysqli($servername, $username, $password, $dbname);
-              // Check connection
-              if ($conn->connect_error) {
+              if ($conn->connect_error) {  # Fehlerbehandlung bei Verbindungsfehlern
                       die("Connection failed: " . $conn->connect_error);
               }
 
-              $sql = "select Host, User from mysql.user;";
+              $sql = "select Host, User from mysql.user;";  # SQL-Abfrage
               $result = $conn->query($sql);
-              while($row = $result->fetch_assoc()){
+              while($row = $result->fetch_assoc()){  # Ausgabe der Ergebnisse
                       echo("<li>" . $row["Host"] . " / " . $row["User"] . "</li>");
               }
-              //var_dump($result);
       ?>
       </body>
       </html>
 
+# Befehle zur Laufzeit
 runcmd:
-  - sudo a2enconf adminer
-  - sudo systemctl restart apache2
-  - sudo systemctl enable apache2
+  - sudo a2enconf adminer  # Aktiviert die Adminer-Konfiguration in Apache
+  - sudo systemctl restart apache2  # Startet Apache neu
+  - sudo systemctl enable apache2  # Aktiviert Apache beim Booten

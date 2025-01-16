@@ -1,4 +1,4 @@
-#cloud-config
+#cloud-config für DB
 users: # Die Benutzer
   - name: ubuntu # Benutzername
     sudo: ALL=(ALL) NOPASSWD:ALL # Rechte
@@ -12,13 +12,13 @@ users: # Die Benutzer
 ssh_pwauth: false # Passwort Authentifikation
 disable_root: false # Kein Root
 package_update: true # Packages updaten
-packages: # Die Packages
+packages: # Die Packages die heruntergeladen werden.
   - curl 
   - wget 
   - mariadb-server
 
 
-runcmd:
+runcmd: # wird automatisch gerunnt
   - sudo sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mysql/mariadb.conf.d/50-server.cnf
   - sudo systemctl restart mariadb
   - sudo systemctl enable mariadb
